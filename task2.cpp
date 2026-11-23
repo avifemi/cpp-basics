@@ -192,36 +192,47 @@ bool logical_values_array::equals(unsigned int a, unsigned int b)
 
 char* logical_values_array::perevod2cc()
 {
-    unsigned int a;
-    char* mas = new char[sizeof(unsigned int) +1]; //создаем массив для хранения числа в 2сс в виде строки
-    char*ptr = mas + sizeof(unsigned int); //создаем указатель на предпоследнюю ячейку в массиве(тк число будет справа на лево)
-    mas[sizeof(unsigned int) + 1] = '\0'; //строка оканчивается \0, поэтому сразу ставим в этом массиве
-    
-    while(_value != 0)
+    unsigned int a = _value;
+    unsigned int count = 0;
+
+    //считаем количество битов в числе
+    do
     {
-        a = _value & 0x00000001; //извлекаем последний бит
-        *ptr = '0' + a; //бит преобразуеи в символ и записываем в ячейку, куда указывает *ptr
-        ptr--;
-        _value = _value >> 1; //подвинули на один бит
+        count++;
+        a = a >> 1;
     }
-    
-    return ++ptr;
+    while(a != 0);
+
+    //создаем массив для хранения числа в 2сс в виде строки
+    char* mas = new char[count + 1];
+    mas[count] = '\0';
+
+    a = _value;
+
+    //записываем биты справа налево
+    for(int i = (int)count - 1; i >= 0; i--)
+    {
+        mas[i] = '0' + (a & 0x00000001);
+        a = a >> 1;
+    }
+
+    return mas;
 }
 
 char logical_values_array::get_bit(unsigned int position)
 {
-    char* ptr;
-    logical_values_array ob(_value);
-    ptr = ob.perevod2cc();
-    if(position > strlen(ptr))
+    char* ptr = perevod2cc();
+    unsigned int length = strlen(ptr);
+
+    if(position >= length)
     {
-        return ptr[strlen(ptr) - 1];
+        position = length - 1;
     }
-    
-    else
-    {
-        return ptr[position];
-    }
+
+    char bit = ptr[position];
+    delete[] ptr;
+
+    return bit;
 }
 
 int main()
