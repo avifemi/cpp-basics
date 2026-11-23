@@ -238,9 +238,26 @@ char logical_values_array::get_bit(unsigned int position)
 int main()
 {
     logical_values_array ob(10);
-    logical_values_array ob1;
-    
-    //ob.perevod2cc();
-    
-    std::cout<<ob.perevod2cc();
+    logical_values_array ob1(5);
+
+    cout << "Первое число: " << ob.get_value() << endl;
+    cout << "Второе число: " << ob1.get_value() << endl;
+
+    logical_values_array a(ob.get_value());
+    a.conjunction_value(ob1);
+    cout << "Конъюнкция: " << a.get_value() << endl;
+
+    logical_values_array b(ob.get_value());
+    b.disjunction_value(ob1);
+    cout << "Дизъюнкция: " << b.get_value() << endl;
+
+    cout << "Полная эквивалентность: " << logical_values_array::equals(10, 10) << endl;
+
+    char* mas = ob.perevod2cc();
+    cout << "Число в двоичной системе: " << mas << endl;
+    delete[] mas;
+
+    cout << "Бит по позиции 1: " << ob.get_bit(1) << endl;
+
+    return 0;
 }
